@@ -12,7 +12,7 @@ export default class HotelDatepicker {
         this.startOfWeek = opts.startOfWeek || 'sunday'; // Or monday
         this.startDate = opts.startDate || new Date();
         this.endDate = opts.endDate || false;
-        this.minNights = opts.minNights || 1;
+        this.minNights = opts.minNights || 0;
         this.maxNights = opts.maxNights || 0;
         this.selectForward = opts.selectForward || false;
         this.disabledDates = opts.disabledDates || [];
@@ -27,11 +27,11 @@ export default class HotelDatepicker {
         this.useDummyInputs = opts.useDummyInputs === undefined ? true : opts.useDummyInputs;
         this.i18n = opts.i18n || {
             selected: 'Your stay:',
-            night: 'Night',
-            nights: 'Nights',
+            day: 'Day',
+            days: 'Days',
             button: 'Close',
-            'check-in': 'Check-in',
-            'check-out': 'Check-out',
+            'check-in': 'Start Date',
+            'check-out': 'End Date',
             'day-names': ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             'month-names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         };
@@ -149,7 +149,7 @@ export default class HotelDatepicker {
         this.end = false;
 
         // Set the minimum of days required by the daterange
-        this.minDays = this.minNights > 1 ? this.minNights + 1 : 2;
+        this.minDays = this.minNights > 0 ? this.minNights + 1 : 1;
 
         // Set the maximum of days required by the daterange
         this.maxDays = this.maxNights > 0 ? this.maxNights + 1 : 0;
@@ -1101,7 +1101,7 @@ export default class HotelDatepicker {
                     }
 
 
-                    else if( this.minNights > 1 && time > this.start && time <= minDate.getTime() ) {
+                    else if( this.minNights > 0 && time > this.start && time <= minDate.getTime() ) {
                         this.addClass(days[i], 'datepicker__month-day--invalid');
                         this.addClass(days[i], 'datepicker__month-day--invalid-range');
                         this.addClass(days[i], 'datepicker__month-day--tmp');
@@ -1152,9 +1152,9 @@ export default class HotelDatepicker {
                 if (this.hoveringTooltip) {
                     if (typeof this.hoveringTooltip === 'function') {
                         tooltip = this.hoveringTooltip(nights, this.start, hoverTime);
-                    } else if (this.hoveringTooltip === true && nights > 0) {
-                        const label = nights === 1 ? this.lang('night') : this.lang('nights');
-                        tooltip = (nights) + ' ' + label;
+                    } else if (this.hoveringTooltip === true && nights >= 0) {
+                        const label = nights <= 1 ? this.lang('day') : this.lang('days');
+                        tooltip = (nights+1) + ' ' + label;
                     }
                 }
             }
